@@ -83,12 +83,11 @@ trait Jump
 
         $type = $this->getResponseType();
 
+        $jump_template=$this->app['config']->get('jump.dispatch_error_tmpl');
         if ('html' == strtolower($type)) {
-            $type = 'view';
+            $result = View::fetch($jump_template, $result);
         }
-
-        $response = Response::create($this->app->config->get('jump.dispatch_error_tmpl'), $type)->assign($result)->header($header);
-
+        $response = Response::create($result, $type)->header($header)->options(['jump_template' => $jump_template]);
         throw new HttpResponseException($response);
     }
 
